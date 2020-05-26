@@ -2,6 +2,8 @@ package converter
 
 import (
 	"encoding/xml"
+
+	"github.com/google/uuid"
 )
 
 // For XMEML v1 details, see http://mirror.informatimago.com/next/developer.apple.com/documentation/AppleApplications/Conceptual/FinalCutPro_XML/FinalCutPro_XML.pdf
@@ -56,58 +58,76 @@ type RawXEML struct {
 
 // Sequence describes a collection of clips and generators sequenced in relation to each other by time, layer, and position.
 type Sequence struct {
-	Name     name     `xml:"name"`
-	Duration duration `xml:"duration"`
-	Rate     Rate     `xml:"rate"`
-	In       in       `xml:"in"`
-	Out      out      `xml:"out"`
-	TimeCode TimeCode `xml:"timecode"`
+	Name             name             `xml:"name"`
+	Duration         duration         `xml:"duration"`
+	Rate             Rate             `xml:"rate"`
+	In               in               `xml:"in"`
+	Out              out              `xml:"out"`
+	TimeCode         TimeCode         `xml:"timecode"`
+	Media            Media            `xml:"media"`
+	Marker           Marker           `xml:"marker"`
+	Sequence         *Sequence        `xml:"sequence"`
+	Labels           Labels           `xml:"labels"`
+	Comment          comment          `xml:"comment"`
+	MasterClipID     masterClipID     `xml:"masterclipid"`
+	IsMasterClip     isMasterClip     `xml:"ismasterclip"`
+	LoggingInfo      LoggingInfo      `xml:"descriptionlogginginfo"`
+	FilmData         FilmData         `xml:"filmdata"`
+	File             *File            `xml:"file"`
+	PixelAspectRatio pixelAspectRatio `xml:"pixelAspectRatio"`
+	UUID             uuid.UUID        `xml:"uuid"`
+	UpdateBehavior   updateBehavior   `xml:"updatebehavior"`
 }
 
-// type media struct {
-// 	audio
-// 	video
-// }
+// Media describes specific media tracks for a clip or a sequence.
+type Media struct {
+	Audio Audio `xml:"audio"`
+	Video Video `xml:"video"`
+}
 
-// type video struct {
-// 	duration
-// 	sample sampleCharacteristics
-// }
+// Video describes data specific to video media.
+type Video struct {
+	Duration              duration              `xml:"duration"`
+	SampleCharacteristics SampleCharacteristics `xml:"samplecharacteristics"`
+}
 
-// type audio struct {
-// 	track
-// 	format
-// 	outputs
-// 	in
-// 	out
-// 	channelCount int
-// 	sampleCharacteristics
-// 	trackCount int
-// 	rate
-// 	duration
-// }
+// Audio describes data specific to audio media.
+type Audio struct {
+	Track                 *Track                `xml:"track"`
+	Format                Format                `xml:"format"`
+	Outputs               Outputs               `xml:"outputs"`
+	In                    in                    `xml:"in"`
+	Out                   out                   `xml:"out"`
+	ChannelCount          numChannels           `xml:"channelcount"`
+	SampleCharacteristics SampleCharacteristics `xml:"samplecharacteristics"`
+	TrackCount            trackCount            `xml:"trackcount"`
+	Rate                  Rate                  `xml:"rate"`
+	Duration              duration              `xml:"duration"`
+}
 
 type trackCount int
 
 type channelDescription string
 
-// type track struct {
-// 	clipItem
-// 	enabled bool
-// 	locked
-// }
+// Track describes data specific to one or more video or audio elements for a track.
+type Track struct {
+	ClipItem ClipItem `xml:"clipitem"`
+	Enabled  enabled  `xml:"enabled"`
+	Locked   locked   `xml:"locked"`
+}
 
 type locked bool
 
 type outputChannelIndex int
 
-// type link struct {
-// 	linkClipPref
-// 	mediaType
-// 	trackIndex
-// 	clipIndex
-// 	groupIndex
-// }
+// Link describes a link between different clips in a sequence.
+type Link struct {
+	LinkClipPref linkClipPref
+	MediaType    mediaType
+	TrackIndex   trackIndex
+	ClipIndex    clipIndex
+	GroupIndex   groupIndex
+}
 
 type linkClipPref string
 
@@ -115,9 +135,11 @@ type clipIndex int
 
 type groupIndex int
 
+type updateBehavior string // enum
+
 // Section: Clips
 
-// Clip describes an encoded clip in the Browser
+// Clip describes an encoded clip in the Browser.
 type Clip struct {
 	Name         name         `xml:"name"`
 	Duration     duration     `xml:"duration"`
@@ -147,38 +169,39 @@ type Clip struct {
 	// timeCode
 }
 
-// type clipItem struct {
-// 	name
-// 	duration
-// 	rate
-// 	start
-// 	end
-// 	link
-// 	syncOffset
-// 	enabled
-// 	in
-// 	out
-// 	masterClipID
-// 	isMasterClip
-// 	loggingInfo
-// 	file
-// 	timeCode
-// 	marker
-// 	anamorphic
-// 	alphaType
-// 	alphaReverse
-// 	labels
-// 	comments
-// 	sourceTrack
-// 	compositeMode
-// 	subClipInfo
-// 	filter
-// 	stillFrame
-// 	stillFrameOffset
-// 	sequence
-// 	startOffset
-// 	endOffset
-// }
+// ClipItem describes a clip in a track.
+type ClipItem struct {
+	Name         name         `xml:"name"`
+	Duration     duration     `xml:"duration"`
+	Rate         Rate         `xml:"rate"`
+	In           in           `xml:"in"`
+	Out          out          `xml:"out"`
+	MasterClipID masterClipID `xml:"masterclipid"`
+	IsMasterClip isMasterClip `xml:"ismasterclip"`
+	Enabled      enabled      `xml:"enabled"`
+	Start        start
+	End          end
+	Link         Link
+	SyncOffset   syncOffset
+	LoggingInfo  LoggingInfo
+	// File             File
+	TimeCode         TimeCode
+	Marker           Marker
+	Anamorphic       anamorphic
+	AlphaType        alphaType
+	AlphaReverse     alphaReverse
+	Labels           Labels
+	Comments         Comments
+	SourceTrack      SourceTrack
+	CompositeMode    compositeMode
+	SubClipInfo      SubClipInfo
+	Filter           Filter
+	StillFrame       stillFrame
+	StillFrameOffset stillFrameOffset
+	Sequence         Sequence
+	StartOffset      startOffset
+	EndOffset        endOffset
+}
 
 type anamorphic bool
 
@@ -192,13 +215,14 @@ type masterClipID string
 
 type isMasterClip bool
 
-// type loggingInfo struct {
-// 	description
-// 	scene
-// 	shotTake
-// 	logNote
-// 	good
-// }
+// LoggingInfo describes logging information for a clip.
+type LoggingInfo struct {
+	Description description `xml:"description"`
+	Scene       scene       `xml:"scene"`
+	ShotTake    shotTake    `xml:"shottake"`
+	LogNote     logNote     `xml:"lognote"`
+	Good        good        `xml:"good"`
+}
 
 type description string
 
@@ -210,37 +234,39 @@ type logNote string
 
 type good bool
 
-// type labels struct {
-// 	label
-// 	label2
-// }
+// Labels describes Label and Label 2 information for a clip.
+type Labels struct {
+	Label  label `xml:"label"`
+	Label2 label `xml:"label2"`
+}
 
 type label string
 
-type label2 string
+// Comments describes comment information for a clip.
+type Comments struct {
+	MasterComment1 comment
+	MasterComment2 comment
+	MasterComment3 comment
+	MasterComment4 comment
+	ClipCommentA   comment
+	ClipCommentB   comment
+}
 
-// type comments struct {
-// 	masterComment1 string
-// 	masterComment2 string
-// 	masterComment3 string
-// 	masterComment4 string
-// 	clipCommentA   string
-// 	clipCommentB   string
-// }
-
-// type sourceTrack struct {
-// 	mediaType
-// 	trackIndex
-// }
+// SourceTrack describes details of the media connected with a clip.
+type SourceTrack struct {
+	MediaType  mediaType  `xml:"mediatype"`
+	TrackIndex trackIndex `xml:"trackindex"`
+}
 
 type start int
 
 type end int
 
-// type subClipInfo struct {
-// 	startOffset
-// 	endOffset
-// }
+// SubClipInfo describes offset information for a subclip.
+type SubClipInfo struct {
+	StartOffset startOffset `xml:"startoffset"`
+	EndOffset   endOffset   `xml:"endoffset"`
+}
 
 type startOffset int
 
@@ -260,25 +286,26 @@ type duration int
 
 type enabled bool
 
-// File describes an encoded media file used by a Clip
+// File describes an encoded media file used by a Clip.
 type File struct {
-	ID string `xml:"id,attr"`
-	// duration
-	Rate Rate `xml:"rate"`
-	// name
-	PathURL pathURL `xml:"pathurl"`
-	// timeCode
-	// media
+	ID       string   `xml:"id,attr"`
+	Duration duration `xml:"duration"`
+	Rate     Rate     `xml:"rate"`
+	Name     name     `xml:"name"`
+	PathURL  pathURL  `xml:"pathurl"`
+	TimeCode TimeCode `xml:"timecode"`
+	Media    Media    `xml:"media"`
 }
 
 type pathURL string
 
-// type marker struct {
-// 	name
-// 	in
-// 	out
-// 	comment
-// }
+// Marker describes a named time or range of time in a clip or sequence.
+type Marker struct {
+	Name    name    `xml:"name"`
+	In      in      `xml:"in"`
+	Out     out     `xml:"out"`
+	Comment comment `xml:"comment"`
+}
 
 type comment string
 
@@ -355,12 +382,13 @@ type source string
 
 type alignment string // enum alignment
 
-// type filter struct {
-// 	enabled
-// 	start
-// 	end
-// 	effect
-// }
+// Filter describes a filter effect.
+type Filter struct {
+	Enabled enabled `xml:"enabled"`
+	Start   start   `xml:"start"`
+	End     end     `xml:"end"`
+	// effect
+}
 
 // type effect struct {
 // 	name
@@ -459,20 +487,23 @@ type vert int
 
 // Section: Sequence Settings
 
-// type format struct {
-// 	sampleCharacteristics
-// }
+// Format describes format information for video or audio media in a track.
+type Format struct {
+	SampleCharacteristics SampleCharacteristics `xml:"samplecharacteristics"`
+	AppSpecificData       AppSpecificData       `xml:"appspecificdata"`
+}
 
-// type sampleCharacteristics struct {
-// 	width
-// 	height
-// 	anamorphic
-// 	pixelAspectRatio
-// 	fieldDominance
-// 	rate
-// 	colorDepth
-// 	codec
-// }
+// SampleCharacteristics describes characteristics of video or audio media.
+type SampleCharacteristics struct {
+	Width            width
+	Height           height
+	Anamorphic       anamorphic
+	PixelAspectRatio pixelAspectRatio
+	FieldDominance   fieldDominance
+	Rate             Rate `xml:"rate"`
+	ColorDepth       colorDepth
+	Codec            Codec
+}
 
 type width int
 
@@ -484,25 +515,28 @@ type fieldDominance string
 
 type colorDepth int // enum colordepth
 
-// type codec struct {
-// 	name
-// 	appSpecificData
-// }
+// Codec describes details about a codec.
+type Codec struct {
+	Name            name            `xml:"name"`
+	AppSpecificData AppSpecificData `xml:"appspecificdata"`
+}
 
 type depth int // enum 8|16
 
 type sampleRate int // enum 32000|44100|48000
 
-// type outputs struct {
-// 	group
-// }
+// Outputs describes information about audio outputs.
+type Outputs struct {
+	Group Group `xml:"group"`
+}
 
-// type group struct {
-// 	index
-// 	numChannels
-// 	downMix
-// 	channel
-// }
+// Group describes information about a group of audio output channels.
+type Group struct {
+	Index       index       `xml:"index"`
+	NumChannels numChannels `xml:"numchannels"`
+	DownMix     downMix     `xml:"downmix"`
+	Channel     Channel     `xml:"channel"`
+}
 
 type index int
 
@@ -510,18 +544,20 @@ type numChannels int
 
 type downMix int // enum downmix
 
-// type channel struct {
-// 	index
-// }
+// Channel describes the output device index of a channel in a group.
+type Channel struct {
+	Index index `xml:"index"`
+}
 
 // Section: Application Specific Data
 
-// type appSpecificData struct {
-// 	appName
-// 	appManufacturer
-// 	appVersion
-// 	data
-// }
+// AppSpecificData describes application-specific data.
+type AppSpecificData struct {
+	AppName         appName         `xml:"appname"`
+	AppManufacturer appManufacturer `xml:"appmanufacturer"`
+	AppVersion      appVersion      `xml:"appversion"`
+	// Data Data
+}
 
 type appName string
 
@@ -572,6 +608,11 @@ type temporalQuality int // range 0 - 1023
 type keyFrameRate int
 
 type dataRate int
+
+// Section: Film Data
+
+// FilmData describes metadata imported from Cinema Tools.
+type FilmData struct{}
 
 // Section: Import Options
 
