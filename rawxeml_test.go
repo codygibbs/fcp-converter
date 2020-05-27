@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"encoding/xml"
 	"testing"
 )
 
@@ -168,5 +169,105 @@ func TestXEMLVersionImport(t *testing.T) {
 
 	if xmeml.Version != 3 {
 		t.Error("XEML version was not imported correctly")
+	}
+}
+
+func TestIntValueImport(t *testing.T) {
+	s := `
+		<parameter>
+			<value>100</value>
+		</parameter>
+	`
+	var xs Parameter
+
+	err := xml.Unmarshal([]byte(s), &xs)
+	if err != nil {
+		t.Error("parameter source could not be imported: " + err.Error())
+	}
+
+	if xs.Value.GetNumber() != 100 {
+		t.Error("value number not imported")
+	}
+}
+
+func TestBoolValueImport(t *testing.T) {
+	s := `
+		<parameter>
+			<value>TRUE</value>
+		</parameter>
+	`
+	var xs Parameter
+
+	err := xml.Unmarshal([]byte(s), &xs)
+	if err != nil {
+		t.Error("parameter source could not be imported: " + err.Error())
+	}
+
+	if xs.Value.GetBool() != true {
+		t.Error("value boolean not imported")
+	}
+}
+
+func TestColorValueImport(t *testing.T) {
+	s := `
+		<parameter>
+			<value>
+				<red>3</red>
+				<blue>5</blue>
+				<green>7</green>
+				<alpha>9</alpha>
+			</value>
+		</parameter>
+	`
+	var xs Parameter
+
+	err := xml.Unmarshal([]byte(s), &xs)
+	if err != nil {
+		t.Error("parameter source could not be imported: " + err.Error())
+	}
+
+	color := xs.Value.GetColor()
+
+	if color.Red != 3 {
+		t.Error("red color value not imported")
+	}
+
+	if color.Blue != 5 {
+		t.Error("blue color value not imported")
+	}
+
+	if color.Green != 7 {
+		t.Error("green color value not imported")
+	}
+
+	if color.Alpha != 9 {
+		t.Error("alpha color value not imported")
+	}
+}
+
+func TestPositionValueImport(t *testing.T) {
+	s := `
+		<parameter>
+			<value>
+				<horiz>3</horiz>
+				<vert>5</vert>
+			</value>
+		</parameter>
+	`
+	var xs Parameter
+
+	err := xml.Unmarshal([]byte(s), &xs)
+	if err != nil {
+		t.Error("parameter source could not be imported: " + err.Error())
+	}
+
+	position := xs.Value.GetPosition()
+
+	if position.Horiz != 3 {
+		t.Error("horizontal position value not imported")
+	}
+
+	if position.Vert != 5 {
+		t.Error("vertical position value not imported")
 	}
 }

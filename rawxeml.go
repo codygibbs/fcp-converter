@@ -2,6 +2,7 @@ package converter
 
 import (
 	"encoding/xml"
+	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -122,11 +123,11 @@ type outputChannelIndex int
 
 // Link describes a link between different clips in a sequence.
 type Link struct {
-	LinkClipPref linkClipPref
-	MediaType    mediaType
-	TrackIndex   trackIndex
-	ClipIndex    clipIndex
-	GroupIndex   groupIndex
+	LinkClipPref linkClipPref `xml:"linkclippref"`
+	MediaType    mediaType    `xml:"mediatype"`
+	TrackIndex   trackIndex   `xml:"trackindex"`
+	ClipIndex    clipIndex    `xml:"clipindex"`
+	GroupIndex   groupIndex   `xml:"groupindex"`
 }
 
 type linkClipPref string
@@ -171,36 +172,36 @@ type Clip struct {
 
 // ClipItem describes a clip in a track.
 type ClipItem struct {
-	Name         name         `xml:"name"`
-	Duration     duration     `xml:"duration"`
-	Rate         Rate         `xml:"rate"`
-	In           in           `xml:"in"`
-	Out          out          `xml:"out"`
-	MasterClipID masterClipID `xml:"masterclipid"`
-	IsMasterClip isMasterClip `xml:"ismasterclip"`
-	Enabled      enabled      `xml:"enabled"`
-	Start        start
-	End          end
-	Link         Link
-	SyncOffset   syncOffset
-	LoggingInfo  LoggingInfo
-	// File             File
-	TimeCode         TimeCode
-	Marker           Marker
-	Anamorphic       anamorphic
-	AlphaType        alphaType
-	AlphaReverse     alphaReverse
-	Labels           Labels
-	Comments         Comments
-	SourceTrack      SourceTrack
-	CompositeMode    compositeMode
-	SubClipInfo      SubClipInfo
-	Filter           Filter
-	StillFrame       stillFrame
-	StillFrameOffset stillFrameOffset
-	Sequence         Sequence
-	StartOffset      startOffset
-	EndOffset        endOffset
+	Name             name             `xml:"name"`
+	Duration         duration         `xml:"duration"`
+	Rate             Rate             `xml:"rate"`
+	In               in               `xml:"in"`
+	Out              out              `xml:"out"`
+	MasterClipID     masterClipID     `xml:"masterclipid"`
+	IsMasterClip     isMasterClip     `xml:"ismasterclip"`
+	Enabled          enabled          `xml:"enabled"`
+	Start            start            `xml:"start"`
+	End              end              `xml:"end"`
+	Link             Link             `xml:"link"`
+	SyncOffset       syncOffset       `xml:"syncoffset"`
+	LoggingInfo      LoggingInfo      `xml:"logginginfo"`
+	File             File             `xml:"file"`
+	TimeCode         TimeCode         `xml:"timecode"`
+	Marker           Marker           `xml:"marker"`
+	Anamorphic       anamorphic       `xml:"anamorphic"`
+	AlphaType        alphaType        `xml:"alphatype"`
+	AlphaReverse     alphaReverse     `xml:"alphareverse"`
+	Labels           Labels           `xml:"labels"`
+	Comments         Comments         `xml:"comments"`
+	SourceTrack      SourceTrack      `xml:"sourcetrack"`
+	CompositeMode    compositeMode    `xml:"compositemode"`
+	SubClipInfo      SubClipInfo      `xml:"sublipinfo"`
+	Filter           Filter           `xml:"filter"`
+	StillFrame       stillFrame       `xml:"stillframe"`
+	StillFrameOffset stillFrameOffset `xml:"stillframeoffset"`
+	Sequence         *Sequence        `xml:"sequence"`
+	StartOffset      startOffset      `xml:"startoffset"`
+	EndOffset        endOffset        `xml:"endoffset"`
 }
 
 type anamorphic bool
@@ -244,12 +245,12 @@ type label string
 
 // Comments describes comment information for a clip.
 type Comments struct {
-	MasterComment1 comment
-	MasterComment2 comment
-	MasterComment3 comment
-	MasterComment4 comment
-	ClipCommentA   comment
-	ClipCommentB   comment
+	MasterComment1 comment `xml:"mastercomment1"`
+	MasterComment2 comment `xml:"mastercomment2"`
+	MasterComment3 comment `xml:"mastercomment3"`
+	MasterComment4 comment `xml:"mastercomment4"`
+	ClipCommentA   comment `xml:"clipcommenta"`
+	ClipCommentB   comment `xml:"clipcommentb"`
 }
 
 // SourceTrack describes details of the media connected with a clip.
@@ -387,17 +388,18 @@ type Filter struct {
 	Enabled enabled `xml:"enabled"`
 	Start   start   `xml:"start"`
 	End     end     `xml:"end"`
-	// effect
+	Effect  Effect  `xml:"effect"`
 }
 
-// type effect struct {
-// 	name
-// 	effectID
-// 	effectType
-// 	mediaType
-// 	effectCategory
-// 	parameter
-// }
+// Effect describes an effect or processing operation.
+type Effect struct {
+	Name           name           `xml:"name"`
+	EffectID       effectID       `xml:"effectid"`
+	EffectType     effectType     `xml:"effecttype"`
+	MediaType      mediaType      `xml:"mediatype"`
+	EffectCategory effectCategory `xml:"effectcategory"`
+	Parameter      Parameter      `xml:"parameter"`
+}
 
 type effectID string
 
@@ -413,17 +415,18 @@ type endRatio float32
 
 type reverse bool
 
-// type parameter struct {
-// 	parameterID
-// 	name
-// 	value
-// 	keyFrame
-// 	valueMin
-// 	valueMax
-// 	valueList
-// 	interpolation
-// 	appSpecificData
-// }
+// Parameter describes a parameter for an effect.
+type Parameter struct {
+	ParameterID     string          `xml:"parameterid"`
+	Name            name            `xml:"name"`
+	Value           Value           `xml:"value"`
+	KeyFrame        KeyFrame        `xml:"keyframe"`
+	ValueMin        valueMin        `xml:"valuemin"`
+	ValueMax        valueMin        `xml:"valuemax"`
+	ValueList       ValueList       `xml:"valuelist"`
+	Interpolation   Interpolation   `xml:"interpolation"`
+	AppSpecificData AppSpecificData `xml:"appspecificdata"`
+}
 
 type parameterID string
 
@@ -431,59 +434,117 @@ type valueMin int
 
 type valueMax int
 
-// type valueList struct {
-// 	valueEntry
-// }
+// ValueList describes information about a pop-up list in a parameter.
+type ValueList struct {
+	ValueEntry `xml:""`
+}
 
-// type valueEntry struct {
-// 	name
-// 	value
-// }
+// ValueEntry describes information about the choice in a pop-up list in a parameter.
+type ValueEntry struct {
+	Name  name  `xml:"name"`
+	Value Value `xml:"value"`
+}
 
-// type value struct {
-// 	number  int
-// 	boolean bool
-// 	red     int
-// 	blue    int
-// 	green   int
-// 	alpha   int
-// 	horiz
-// 	vert
-// }
+// Value describes a fixed value for an effect parameter or a keyframe.
+type Value struct {
+	Data  string `xml:",chardata"`
+	Red   int    `xml:"red"`
+	Blue  int    `xml:"blue"`
+	Green int    `xml:"green"`
+	Alpha int    `xml:"alpha"`
+	Horiz horiz  `xml:"horiz"`
+	Vert  vert   `xml:"vert"`
+}
 
-// type keyFrame struct {
-// 	when
-// 	value
-// 	interpolation
-// 	inScale
-// 	outScale
-// 	inBEZ
-// 	outBEZ
-// }
+// ColorValue describes color information that can be pulled from a value.
+type ColorValue struct {
+	Red   int
+	Blue  int
+	Green int
+	Alpha int
+}
+
+// PositionValue describes position information that can be pulled from a value.
+type PositionValue struct {
+	Horiz horiz
+	Vert  vert
+}
+
+// GetBool pulls collected boolean data from a value.
+func (v Value) GetBool() bool {
+	b, err := strconv.ParseBool(v.Data)
+	if err != nil {
+		return false
+	}
+
+	return b
+}
+
+// GetColor pulls collected color data from a value.
+func (v Value) GetColor() ColorValue {
+	return ColorValue{
+		Red:   v.Red,
+		Blue:  v.Blue,
+		Green: v.Green,
+		Alpha: v.Alpha,
+	}
+}
+
+// GetNumber pulls collected number data from a value.
+func (v Value) GetNumber() int {
+	i, err := strconv.Atoi(v.Data)
+	if err != nil {
+		return 0
+	}
+
+	return i
+}
+
+// GetPosition pulls collected position data from a value.
+func (v Value) GetPosition() PositionValue {
+	return PositionValue{
+		Horiz: v.Horiz,
+		Vert:  v.Vert,
+	}
+}
+
+// KeyFrame describes a keyframe for an effect.
+type KeyFrame struct {
+	When          when          `xml:"when"`
+	Value         Value         `xml:"value"`
+	Interpolation Interpolation `xml:"interpolation"`
+	InScale       inScale       `xml:"inscale"`
+	OutScale      outScale      `xml:"outscale"`
+	InBEZ         InBEZ         `xml:"inbez"`
+	OutBEZ        OutBEZ        `xml:"outbez"`
+}
 
 type when int
 
 type inScale int
 
-// type inBEZ struct {
-// 	horiz
-// 	vert
-// }
+// InBEZ describes the incoming handle value for a keyframe.
+type InBEZ struct {
+	Horiz horiz `xml:"horiz"`
+	Vert  vert  `xml:"vert"`
+}
 
 type outScale int
 
-// type outBEZ struct {
-// 	horiz
-// 	vert
-// }
+// OutBEZ describes the outgoing handle value for a keyframe.
+type OutBEZ struct {
+	Horiz horiz `xml:"horiz"`
+	Vert  vert  `xml:"vert"`
+}
 
 type horiz int
 
 type vert int
 
-// type interpolation struct {
-// 	name
-// }
+// Interpolation describes the type of curve interpretation and data to use in the parent element.
+type Interpolation struct {
+	Name name `xml:"name"`
+}
 
 // Section: Sequence Settings
 
@@ -495,14 +556,14 @@ type Format struct {
 
 // SampleCharacteristics describes characteristics of video or audio media.
 type SampleCharacteristics struct {
-	Width            width
-	Height           height
-	Anamorphic       anamorphic
-	PixelAspectRatio pixelAspectRatio
-	FieldDominance   fieldDominance
-	Rate             Rate `xml:"rate"`
-	ColorDepth       colorDepth
-	Codec            Codec
+	Width            width            `xml:"width"`
+	Height           height           `xml:"height"`
+	Anamorphic       anamorphic       `xml:"anamorphic"`
+	PixelAspectRatio pixelAspectRatio `xml:"pixelaspectratio"`
+	FieldDominance   fieldDominance   `xml:"fielddominance"`
+	Rate             Rate             `xml:"rate"`
+	ColorDepth       colorDepth       `xml:"colordepth"`
+	Codec            Codec            `xml:"codec"`
 }
 
 type width int
