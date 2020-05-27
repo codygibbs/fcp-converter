@@ -7,9 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// For XMEML v1 details, see http://mirror.informatimago.com/next/developer.apple.com/documentation/AppleApplications/Conceptual/FinalCutPro_XML/FinalCutPro_XML.pdf
-// For XMEML v2-5 changes, see https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/FinalCutPro_XML/VersionsoftheInterchangeFormat/VersionsoftheInterchangeFormat.html
-
 const (
 	compositeNormal     = "normal"
 	compositeAdd        = "add"
