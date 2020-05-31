@@ -32,8 +32,8 @@ type RawXEML struct {
 	// ImportOptions
 	// Project Project
 	// Bin     Bin
-	Clip     Clip     `xml:"clip"`
-	Sequence Sequence `xml:"sequence"`
+	Clip     *Clip     `xml:"clip,omitempty"`
+	Sequence *Sequence `xml:"sequence,omitempty"`
 }
 
 // type Project struct {
@@ -58,60 +58,36 @@ type RawXEML struct {
 type Sequence struct {
 	Name             name             `xml:"name"`
 	Duration         duration         `xml:"duration"`
-	Rate             Rate             `xml:"rate"`
-	In               in               `xml:"in"`
-	Out              out              `xml:"out"`
-	TimeCode         TimeCode         `xml:"timecode"`
-	Media            Media            `xml:"media"`
-	Marker           Marker           `xml:"marker"`
-	Sequence         *Sequence        `xml:"sequence"`
-	Labels           Labels           `xml:"labels"`
-	Comment          comment          `xml:"comment"`
-	MasterClipID     masterClipID     `xml:"masterclipid"`
-	IsMasterClip     isMasterClip     `xml:"ismasterclip"`
-	LoggingInfo      LoggingInfo      `xml:"descriptionlogginginfo"`
-	FilmData         FilmData         `xml:"filmdata"`
-	File             *File            `xml:"file"`
-	PixelAspectRatio pixelAspectRatio `xml:"pixelAspectRatio"`
-	UUID             uuid.UUID        `xml:"uuid"`
-	UpdateBehavior   updateBehavior   `xml:"updatebehavior"`
+	Rate             *Rate            `xml:"rate"`
+	In               in               `xml:"in,omitempty"`
+	Out              out              `xml:"out,omitempty"`
+	TimeCode         *TimeCode        `xml:"timecode,omitempty"`
+	Media            *Media           `xml:"media,omitempty"`
+	Marker           *Marker          `xml:"marker,omitempty"`
+	Sequence         *Sequence        `xml:"sequence,omitempty"`
+	Labels           *Labels          `xml:"labels,omitempty"`
+	Comment          comment          `xml:"comment,omitempty"`
+	MasterClipID     masterClipID     `xml:"masterclipid,omitempty"`
+	IsMasterClip     isMasterClip     `xml:"ismasterclip,omitempty"`
+	LoggingInfo      *LoggingInfo     `xml:"descriptionlogginginfo,omitempty"`
+	FilmData         *FilmData        `xml:"filmdata,omitempty"`
+	File             *File            `xml:"file,omitempty"`
+	PixelAspectRatio pixelAspectRatio `xml:"pixelAspectRatio,omitempty"`
+	UUID             *uuid.UUID       `xml:"uuid,omitempty"`
+	UpdateBehavior   updateBehavior   `xml:"updatebehavior,omitempty"`
 }
 
 // Media describes specific media tracks for a clip or a sequence.
 type Media struct {
-	Audio Audio `xml:"audio"`
-	Video Video `xml:"video"`
+	Audio *Audio `xml:"audio,omitempty"`
+	Video *Video `xml:"video,omitempty"`
 }
-
-// Video describes data specific to video media.
-type Video struct {
-	Duration              duration              `xml:"duration"`
-	SampleCharacteristics SampleCharacteristics `xml:"samplecharacteristics"`
-}
-
-// Audio describes data specific to audio media.
-type Audio struct {
-	Track                 *Track                `xml:"track"`
-	Format                Format                `xml:"format"`
-	Outputs               Outputs               `xml:"outputs"`
-	In                    in                    `xml:"in"`
-	Out                   out                   `xml:"out"`
-	ChannelCount          numChannels           `xml:"channelcount"`
-	SampleCharacteristics SampleCharacteristics `xml:"samplecharacteristics"`
-	TrackCount            trackCount            `xml:"trackcount"`
-	Rate                  Rate                  `xml:"rate"`
-	Duration              duration              `xml:"duration"`
-}
-
-type trackCount int
-
-type channelDescription string
 
 // Track describes data specific to one or more video or audio elements for a track.
 type Track struct {
-	ClipItem ClipItem `xml:"clipitem"`
-	Enabled  enabled  `xml:"enabled"`
-	Locked   locked   `xml:"locked"`
+	ClipItem *ClipItem `xml:"clipitem,omitempty"`
+	Enabled  enabled   `xml:"enabled,omitempty"`
+	Locked   locked    `xml:"locked,omitempty"`
 }
 
 type locked bool
@@ -120,11 +96,11 @@ type outputChannelIndex int
 
 // Link describes a link between different clips in a sequence.
 type Link struct {
-	LinkClipPref linkClipPref `xml:"linkclippref"`
-	MediaType    mediaType    `xml:"mediatype"`
-	TrackIndex   trackIndex   `xml:"trackindex"`
-	ClipIndex    clipIndex    `xml:"clipindex"`
-	GroupIndex   groupIndex   `xml:"groupindex"`
+	LinkClipPref linkClipPref `xml:"linkclippref,omitempty"`
+	MediaType    mediaType    `xml:"mediatype,omitempty"`
+	TrackIndex   trackIndex   `xml:"trackindex,omitempty"`
+	ClipIndex    clipIndex    `xml:"clipindex,omitempty"`
+	GroupIndex   groupIndex   `xml:"groupindex,omitempty"`
 }
 
 type linkClipPref string
@@ -141,28 +117,28 @@ type updateBehavior string // enum
 type Clip struct {
 	Name         name         `xml:"name"`
 	Duration     duration     `xml:"duration"`
-	Rate         Rate         `xml:"rate"`
-	In           in           `xml:"in"`
-	Out          out          `xml:"out"`
-	MasterClipID masterClipID `xml:"masterclipid"`
-	IsMasterClip isMasterClip `xml:"ismasterclip"`
-	Enabled      enabled      `xml:"enabled"`
+	Rate         *Rate        `xml:"rate"`
+	In           in           `xml:"in,omitempty"`
+	Out          out          `xml:"out,omitempty"`
+	MasterClipID masterClipID `xml:"masterclipid,omitempty"`
+	IsMasterClip isMasterClip `xml:"ismasterclip,omitempty"`
+	Enabled      enabled      `xml:"enabled,omitempty"`
 	// media
 	// marker
-	Anamorphic   anamorphic   `xml:"anamorphic"`
-	AlphaType    alphaType    `xml:"alphatype"`
-	AlphaReverse alphaReverse `xml:"alphareverse"`
+	Anamorphic   anamorphic   `xml:"anamorphic,omitempty"`
+	AlphaType    alphaType    `xml:"alphatype,omitempty"`
+	AlphaReverse alphaReverse `xml:"alphareverse,omitempty"`
 	// labels
 	// comments
 	// sourceTrack
-	CompositeMode compositeMode `xml:"compositemode"`
+	CompositeMode compositeMode `xml:"compositemode,omitempty"`
 	// subClipInfo
 	// filter
-	StillFrame       stillFrame       `xml:"stillframe"`
-	StillFrameOffset stillFrameOffset `xml:"stillframeoffset"`
-	StartOffset      startOffset      `xml:"startoffset"`
-	EndOffset        endOffset        `xml:"endoffset"`
-	File             File             `xml:"file"`
+	StillFrame       stillFrame       `xml:"stillframe,omitempty"`
+	StillFrameOffset stillFrameOffset `xml:"stillframeoffset,omitempty"`
+	StartOffset      startOffset      `xml:"startoffset,omitempty"`
+	EndOffset        endOffset        `xml:"endoffset,omitempty"`
+	File             *File            `xml:"file,omitempty"`
 	// loggingInfo
 	// timeCode
 }
@@ -171,34 +147,34 @@ type Clip struct {
 type ClipItem struct {
 	Name             name             `xml:"name"`
 	Duration         duration         `xml:"duration"`
-	Rate             Rate             `xml:"rate"`
-	In               in               `xml:"in"`
-	Out              out              `xml:"out"`
-	MasterClipID     masterClipID     `xml:"masterclipid"`
-	IsMasterClip     isMasterClip     `xml:"ismasterclip"`
-	Enabled          enabled          `xml:"enabled"`
+	Rate             *Rate            `xml:"rate"`
+	In               in               `xml:"in,omitempty"`
+	Out              out              `xml:"out,omitempty"`
+	MasterClipID     masterClipID     `xml:"masterclipid,omitempty"`
+	IsMasterClip     isMasterClip     `xml:"ismasterclip,omitempty"`
+	Enabled          enabled          `xml:"enabled,omitempty"`
 	Start            start            `xml:"start"`
 	End              end              `xml:"end"`
-	Link             Link             `xml:"link"`
-	SyncOffset       syncOffset       `xml:"syncoffset"`
-	LoggingInfo      LoggingInfo      `xml:"logginginfo"`
-	File             File             `xml:"file"`
-	TimeCode         TimeCode         `xml:"timecode"`
-	Marker           Marker           `xml:"marker"`
-	Anamorphic       anamorphic       `xml:"anamorphic"`
-	AlphaType        alphaType        `xml:"alphatype"`
-	AlphaReverse     alphaReverse     `xml:"alphareverse"`
-	Labels           Labels           `xml:"labels"`
-	Comments         Comments         `xml:"comments"`
-	SourceTrack      SourceTrack      `xml:"sourcetrack"`
-	CompositeMode    compositeMode    `xml:"compositemode"`
-	SubClipInfo      SubClipInfo      `xml:"sublipinfo"`
-	Filter           Filter           `xml:"filter"`
-	StillFrame       stillFrame       `xml:"stillframe"`
-	StillFrameOffset stillFrameOffset `xml:"stillframeoffset"`
-	Sequence         *Sequence        `xml:"sequence"`
-	StartOffset      startOffset      `xml:"startoffset"`
-	EndOffset        endOffset        `xml:"endoffset"`
+	Link             *Link            `xml:"link,omitempty"`
+	SyncOffset       syncOffset       `xml:"syncoffset,omitempty"`
+	LoggingInfo      *LoggingInfo     `xml:"logginginfo,omitempty"`
+	File             *File            `xml:"file,omitempty"`
+	TimeCode         *TimeCode        `xml:"timecode,omitempty"`
+	Marker           *Marker          `xml:"marker,omitempty"`
+	Anamorphic       anamorphic       `xml:"anamorphic,omitempty"`
+	AlphaType        alphaType        `xml:"alphatype,omitempty"`
+	AlphaReverse     alphaReverse     `xml:"alphareverse,omitempty"`
+	Labels           *Labels          `xml:"labels,omitempty"`
+	Comments         *Comments        `xml:"comments,omitempty"`
+	SourceTrack      *SourceTrack     `xml:"sourcetrack,omitempty"`
+	CompositeMode    compositeMode    `xml:"compositemode,omitempty"`
+	SubClipInfo      *SubClipInfo     `xml:"sublipinfo,omitempty"`
+	Filter           *Filter          `xml:"filter,omitempty"`
+	StillFrame       stillFrame       `xml:"stillframe,omitempty"`
+	StillFrameOffset stillFrameOffset `xml:"stillframeoffset,omitempty"`
+	Sequence         *Sequence        `xml:"sequence,omitempty"`
+	StartOffset      startOffset      `xml:"startoffset,omitempty"`
+	EndOffset        endOffset        `xml:"endoffset,omitempty"`
 }
 
 type anamorphic bool
@@ -215,11 +191,11 @@ type isMasterClip bool
 
 // LoggingInfo describes logging information for a clip.
 type LoggingInfo struct {
-	Description description `xml:"description"`
-	Scene       scene       `xml:"scene"`
-	ShotTake    shotTake    `xml:"shottake"`
-	LogNote     logNote     `xml:"lognote"`
-	Good        good        `xml:"good"`
+	Description description `xml:"description,omitempty"`
+	Scene       scene       `xml:"scene,omitempty"`
+	ShotTake    shotTake    `xml:"shottake,omitempty"`
+	LogNote     logNote     `xml:"lognote,omitempty"`
+	Good        good        `xml:"good,omitempty"`
 }
 
 type description string
@@ -234,26 +210,26 @@ type good bool
 
 // Labels describes Label and Label 2 information for a clip.
 type Labels struct {
-	Label  label `xml:"label"`
-	Label2 label `xml:"label2"`
+	Label  label `xml:"label,omitempty"`
+	Label2 label `xml:"label2,omitempty"`
 }
 
 type label string
 
 // Comments describes comment information for a clip.
 type Comments struct {
-	MasterComment1 comment `xml:"mastercomment1"`
-	MasterComment2 comment `xml:"mastercomment2"`
-	MasterComment3 comment `xml:"mastercomment3"`
-	MasterComment4 comment `xml:"mastercomment4"`
-	ClipCommentA   comment `xml:"clipcommenta"`
-	ClipCommentB   comment `xml:"clipcommentb"`
+	MasterComment1 comment `xml:"mastercomment1,omitempty"`
+	MasterComment2 comment `xml:"mastercomment2,omitempty"`
+	MasterComment3 comment `xml:"mastercomment3,omitempty"`
+	MasterComment4 comment `xml:"mastercomment4,omitempty"`
+	ClipCommentA   comment `xml:"clipcommenta,omitempty"`
+	ClipCommentB   comment `xml:"clipcommentb,omitempty"`
 }
 
 // SourceTrack describes details of the media connected with a clip.
 type SourceTrack struct {
-	MediaType  mediaType  `xml:"mediatype"`
-	TrackIndex trackIndex `xml:"trackindex"`
+	MediaType  mediaType  `xml:"mediatype,omitempty"`
+	TrackIndex trackIndex `xml:"trackindex,omitempty"`
 }
 
 type start int
@@ -262,8 +238,8 @@ type end int
 
 // SubClipInfo describes offset information for a subclip.
 type SubClipInfo struct {
-	StartOffset startOffset `xml:"startoffset"`
-	EndOffset   endOffset   `xml:"endoffset"`
+	StartOffset startOffset `xml:"startoffset,omitempty"`
+	EndOffset   endOffset   `xml:"endoffset,omitempty"`
 }
 
 type startOffset int
@@ -276,6 +252,38 @@ type stillFrameOffset int
 
 type syncOffset int
 
+// Section: Video and Audio
+
+// Video describes data specific to video media.
+type Video struct {
+	Track                 *Track                 `xml:"track,omitempty"`
+	Duration              duration               `xml:"duration,omitempty"`
+	Format                *Format                `xml:"forma,omitemptyt"`
+	SampleCharacteristics *SampleCharacteristics `xml:"samplecharacteristics,omitempty"`
+	In                    in                     `xml:"in,omitempty"`
+	Out                   out                    `xml:"out,omitempty"`
+}
+
+// Audio describes data specific to audio media.
+type Audio struct {
+	Track                 *Track                 `xml:"track,omitempty"`
+	Format                *Format                `xml:"format,omitempty"`
+	Outputs               *Outputs               `xml:"outputs,omitempty"`
+	In                    in                     `xml:"in,omitempty"`
+	Out                   out                    `xml:"out,omitempty"`
+	ChannelCount          channelCount           `xml:"channelcount,omitempty"`
+	SampleCharacteristics *SampleCharacteristics `xml:"samplecharacteristics,omitempty"`
+	TrackCount            trackCount             `xml:"trackcount,omitempty"`
+	Rate                  *Rate                  `xml:"rate,omitempty"`
+	Duration              duration               `xml:"duration,omitempty"`
+}
+
+type channelCount int
+
+type trackCount int
+
+type channelDescription string // enum
+
 // Section: Common Elements
 
 type name string
@@ -286,13 +294,13 @@ type enabled bool
 
 // File describes an encoded media file used by a Clip.
 type File struct {
-	ID       string   `xml:"id,attr"`
-	Duration duration `xml:"duration"`
-	Rate     Rate     `xml:"rate"`
-	Name     name     `xml:"name"`
-	PathURL  pathURL  `xml:"pathurl"`
-	TimeCode TimeCode `xml:"timecode"`
-	Media    Media    `xml:"media"`
+	ID       string    `xml:"id,attr"`
+	Duration duration  `xml:"duration"`
+	Rate     *Rate     `xml:"rate"`
+	Name     name      `xml:"name,omitempty"`
+	PathURL  pathURL   `xml:"pathurl,omitempty"`
+	TimeCode *TimeCode `xml:"timecode,omitempty"`
+	Media    *Media    `xml:"media,omitempty"`
 }
 
 type pathURL string
@@ -302,7 +310,7 @@ type Marker struct {
 	Name    name    `xml:"name"`
 	In      in      `xml:"in"`
 	Out     out     `xml:"out"`
-	Comment comment `xml:"comment"`
+	Comment comment `xml:"comment,omitempty"`
 }
 
 type comment string
@@ -321,8 +329,8 @@ type layerIndex int
 
 // Rate describes an encoded time scale to interpret time values for a higher component.
 type Rate struct {
-	TimeBase int  `xml:"timebase"`
-	NTSC     bool `xml:"ntsc"`
+	TimeBase int  `xml:"timebase,omitempty"`
+	NTSC     bool `xml:"ntsc,omitempty"`
 }
 
 type timebase int
@@ -331,10 +339,10 @@ type ntsc bool
 
 // TimeCode describes an encoded value for a clip, sequence, or file.
 type TimeCode struct {
-	TimeCodeString timeCodeString `xml:"string"`
-	Frame          frame          `xml:"frame"`
-	DisplayFormat  displayFormat  `xml:"displayformat"`
-	Rate           Rate           `xml:"rate"`
+	TimeCodeString timeCodeString `xml:"string,omitempty"`
+	Frame          frame          `xml:"frame,omitempty"`
+	DisplayFormat  displayFormat  `xml:"displayformat,omitempty"`
+	Rate           *Rate          `xml:"rate"`
 }
 
 type timeCodeString string
@@ -382,10 +390,10 @@ type alignment string // enum alignment
 
 // Filter describes a filter effect.
 type Filter struct {
-	Enabled enabled `xml:"enabled"`
-	Start   start   `xml:"start"`
-	End     end     `xml:"end"`
-	Effect  Effect  `xml:"effect"`
+	Enabled enabled `xml:"enabled,omitempty"`
+	Start   start   `xml:"start,omitempty"`
+	End     end     `xml:"end,omitempty"`
+	Effect  *Effect `xml:"effect,omitempty"`
 }
 
 // Effect describes an effect or processing operation.
@@ -394,8 +402,8 @@ type Effect struct {
 	EffectID       effectID       `xml:"effectid"`
 	EffectType     effectType     `xml:"effecttype"`
 	MediaType      mediaType      `xml:"mediatype"`
-	EffectCategory effectCategory `xml:"effectcategory"`
-	Parameter      Parameter      `xml:"parameter"`
+	EffectCategory effectCategory `xml:"effectcategory,omitempty"`
+	Parameter      *Parameter     `xml:"parameter,omitempty"`
 }
 
 type effectID string
@@ -414,15 +422,15 @@ type reverse bool
 
 // Parameter describes a parameter for an effect.
 type Parameter struct {
-	ParameterID     string          `xml:"parameterid"`
-	Name            name            `xml:"name"`
-	Value           Value           `xml:"value"`
-	KeyFrame        KeyFrame        `xml:"keyframe"`
-	ValueMin        valueMin        `xml:"valuemin"`
-	ValueMax        valueMin        `xml:"valuemax"`
-	ValueList       ValueList       `xml:"valuelist"`
-	Interpolation   Interpolation   `xml:"interpolation"`
-	AppSpecificData AppSpecificData `xml:"appspecificdata"`
+	ParameterID     string           `xml:"parameterid,omitempty"`
+	Name            name             `xml:"name,omitempty"`
+	Value           *Value           `xml:"value,omitempty"`
+	KeyFrame        *KeyFrame        `xml:"keyframe,omitempty"`
+	ValueMin        valueMin         `xml:"valuemin,omitempty"`
+	ValueMax        valueMin         `xml:"valuemax,omitempty"`
+	ValueList       *ValueList       `xml:"valuelist,omitempty"`
+	Interpolation   *Interpolation   `xml:"interpolation,omitempty"`
+	AppSpecificData *AppSpecificData `xml:"appspecificdata,omitempty"`
 }
 
 type parameterID string
@@ -433,24 +441,24 @@ type valueMax int
 
 // ValueList describes information about a pop-up list in a parameter.
 type ValueList struct {
-	ValueEntry `xml:""`
+	ValueEntry `xml:"valueentry,omitempty"`
 }
 
 // ValueEntry describes information about the choice in a pop-up list in a parameter.
 type ValueEntry struct {
-	Name  name  `xml:"name"`
-	Value Value `xml:"value"`
+	Name  name  `xml:"name,omitempty"`
+	Value Value `xml:"value,omitempty"`
 }
 
 // Value describes a fixed value for an effect parameter or a keyframe.
 type Value struct {
 	Data  string `xml:",chardata"`
-	Red   int    `xml:"red"`
-	Blue  int    `xml:"blue"`
-	Green int    `xml:"green"`
-	Alpha int    `xml:"alpha"`
-	Horiz horiz  `xml:"horiz"`
-	Vert  vert   `xml:"vert"`
+	Red   int    `xml:"red,omitempty"`
+	Blue  int    `xml:"blue,omitempty"`
+	Green int    `xml:"green,omitempty"`
+	Alpha int    `xml:"alpha,omitempty"`
+	Horiz horiz  `xml:"horiz,omitempty"`
+	Vert  vert   `xml:"vert,omitempty"`
 }
 
 // ColorValue describes color information that can be pulled from a value.
@@ -507,13 +515,13 @@ func (v Value) GetPosition() PositionValue {
 
 // KeyFrame describes a keyframe for an effect.
 type KeyFrame struct {
-	When          when          `xml:"when"`
-	Value         Value         `xml:"value"`
-	Interpolation Interpolation `xml:"interpolation"`
-	InScale       inScale       `xml:"inscale"`
-	OutScale      outScale      `xml:"outscale"`
-	InBEZ         InBEZ         `xml:"inbez"`
-	OutBEZ        OutBEZ        `xml:"outbez"`
+	When          when           `xml:"when"`
+	Value         *Value         `xml:"value"`
+	Interpolation *Interpolation `xml:"interpolation,omitempty"`
+	InScale       inScale        `xml:"inscale,omitempty"`
+	OutScale      outScale       `xml:"outscale,omitempty"`
+	InBEZ         *InBEZ         `xml:"inbez,omitempty"`
+	OutBEZ        *OutBEZ        `xml:"outbez,omitempty"`
 }
 
 type when int
@@ -522,16 +530,16 @@ type inScale int
 
 // InBEZ describes the incoming handle value for a keyframe.
 type InBEZ struct {
-	Horiz horiz `xml:"horiz"`
-	Vert  vert  `xml:"vert"`
+	Horiz horiz `xml:"horiz,omitempty"`
+	Vert  vert  `xml:"vert,omitempty"`
 }
 
 type outScale int
 
 // OutBEZ describes the outgoing handle value for a keyframe.
 type OutBEZ struct {
-	Horiz horiz `xml:"horiz"`
-	Vert  vert  `xml:"vert"`
+	Horiz horiz `xml:"horiz,omitempty"`
+	Vert  vert  `xml:"vert,omitempty"`
 }
 
 type horiz int
@@ -547,20 +555,20 @@ type Interpolation struct {
 
 // Format describes format information for video or audio media in a track.
 type Format struct {
-	SampleCharacteristics SampleCharacteristics `xml:"samplecharacteristics"`
-	AppSpecificData       AppSpecificData       `xml:"appspecificdata"`
+	SampleCharacteristics *SampleCharacteristics `xml:"samplecharacteristics,omitempty"`
+	AppSpecificData       *AppSpecificData       `xml:"appspecificdata,omitempty"`
 }
 
 // SampleCharacteristics describes characteristics of video or audio media.
 type SampleCharacteristics struct {
-	Width            width            `xml:"width"`
-	Height           height           `xml:"height"`
-	Anamorphic       anamorphic       `xml:"anamorphic"`
-	PixelAspectRatio pixelAspectRatio `xml:"pixelaspectratio"`
-	FieldDominance   fieldDominance   `xml:"fielddominance"`
-	Rate             Rate             `xml:"rate"`
-	ColorDepth       colorDepth       `xml:"colordepth"`
-	Codec            Codec            `xml:"codec"`
+	Width            width            `xml:"width,omitempty"`
+	Height           height           `xml:"height,omitempty"`
+	Anamorphic       anamorphic       `xml:"anamorphic,omitempty"`
+	PixelAspectRatio pixelAspectRatio `xml:"pixelaspectratio,omitempty"`
+	FieldDominance   fieldDominance   `xml:"fielddominance,omitempty"`
+	Rate             *Rate            `xml:"rate,omitempty"`
+	ColorDepth       colorDepth       `xml:"colordepth,omitempty"`
+	Codec            *Codec           `xml:"codec,omitempty"`
 }
 
 type width int
@@ -575,8 +583,8 @@ type colorDepth int // enum colordepth
 
 // Codec describes details about a codec.
 type Codec struct {
-	Name            name            `xml:"name"`
-	AppSpecificData AppSpecificData `xml:"appspecificdata"`
+	Name            name             `xml:"name,omitempty"`
+	AppSpecificData *AppSpecificData `xml:"appspecificdata,omitempty"`
 }
 
 type depth int // enum 8|16
@@ -585,35 +593,33 @@ type sampleRate int // enum 32000|44100|48000
 
 // Outputs describes information about audio outputs.
 type Outputs struct {
-	Group Group `xml:"group"`
+	Group *Group `xml:"group,omitempty"`
 }
 
 // Group describes information about a group of audio output channels.
 type Group struct {
-	Index       index       `xml:"index"`
-	NumChannels numChannels `xml:"numchannels"`
-	DownMix     downMix     `xml:"downmix"`
-	Channel     Channel     `xml:"channel"`
+	Index       index        `xml:"index,omitempty"`
+	NumChannels channelCount `xml:"numchannels,omitempty"`
+	DownMix     downMix      `xml:"downmix,omitempty"`
+	Channel     *Channel     `xml:"channel,omitempty"`
 }
 
 type index int
-
-type numChannels int
 
 type downMix int // enum downmix
 
 // Channel describes the output device index of a channel in a group.
 type Channel struct {
-	Index index `xml:"index"`
+	Index index `xml:"index,omitempty"`
 }
 
 // Section: Application Specific Data
 
 // AppSpecificData describes application-specific data.
 type AppSpecificData struct {
-	AppName         appName         `xml:"appname"`
-	AppManufacturer appManufacturer `xml:"appmanufacturer"`
-	AppVersion      appVersion      `xml:"appversion"`
+	AppName         appName         `xml:"appname,omitempty"`
+	AppManufacturer appManufacturer `xml:"appmanufacturer,omitempty"`
+	AppVersion      appVersion      `xml:"appversion,omitempty"`
 	// Data Data
 }
 

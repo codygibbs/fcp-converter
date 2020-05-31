@@ -2,6 +2,7 @@ package converter
 
 import (
 	"encoding/xml"
+	"strings"
 	"testing"
 )
 
@@ -269,5 +270,65 @@ func TestPositionValueImport(t *testing.T) {
 
 	if position.Vert != 5 {
 		t.Error("vertical position value not imported")
+	}
+}
+
+func TestXEMLMarshalling(t *testing.T) {
+	xeml := RawXEML{
+		Version: 5,
+		Sequence: &Sequence{
+			Name:     "Test",
+			Duration: 1234,
+			Rate: &Rate{
+				TimeBase: 4,
+				NTSC:     true,
+			},
+			Media: &Media{
+				Video: &Video{
+					Track: &Track{
+						ClipItem: &ClipItem{
+							Link: &Link{
+								LinkClipPref: "foo",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	r, _ := xml.MarshalIndent(xeml, "\t\t", "\t")
+	e := `<xmeml version="5">
+			<sequence>
+				<name>Test</name>
+				<duration>1234</duration>
+				<rate>
+					<timebase>4</timebase>
+					<ntsc>true</ntsc>
+				</rate>
+				<media>
+					<video>
+						<track>
+							<clipitem>
+								<name></name>
+								<duration>0</duration>
+								<start>0</start>
+								<end>0</end>
+								<link>
+									<linkclippref>foo</linkclippref>
+								</link>
+							</clipitem>
+						</track>
+					</video>
+				</media>
+			</sequence>
+		</xmeml>`
+
+	a := strings.Trim(string(r), "\t")
+
+	if a != e {
+		t.Error("marhalled XML does not match expectations")
+		t.Log("Expected: " + e)
+		t.Log("Got: " + a)
 	}
 }
